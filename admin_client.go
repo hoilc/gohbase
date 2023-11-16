@@ -41,6 +41,7 @@ type AdminClient interface {
 	// MoveRegion moves a region to a different RegionServer
 	MoveRegion(mr *hrpc.MoveRegion) error
 	CreateNamespace(t *hrpc.CreateNamespace) error
+	ListNamespaces(t *hrpc.ListNamespaces) ([]*pb.NamespaceDescriptor, error)
 }
 
 // NewAdminClient creates an admin HBase client.
@@ -113,6 +114,21 @@ func (c *client) CreateNamespace(t *hrpc.CreateNamespace) error {
 	}
 
 	return nil
+}
+
+func (c *client) ListNamespaces(t *hrpc.ListNamespaces) ([]*pb.NamespaceDescriptor, error) {
+	pbmsg, err := c.SendRPC(t)
+	if err != nil {
+		return nil, err
+	}
+
+	r, ok := pbmsg.(*pb.ListNamespaceDescriptorsResponse)
+	if !ok {
+		return nil, errors.New("sendPRC returned not a ListNamespaceDescriptorsResponse")
+	}
+
+	return r.GetNamespaceDescriptor(), nil
+
 }
 
 func (c *client) DeleteTable(t *hrpc.DeleteTable) error {
