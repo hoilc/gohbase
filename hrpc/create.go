@@ -117,10 +117,7 @@ func (ct *CreateTable) ToProto() proto.Message {
 	return &pb.CreateTableRequest{
 		TableSchema: &pb.TableSchema{
 			TableName: &pb.TableName{
-				// TODO: handle namespaces
-				// Namespace: []byte("default"),
-				// Qualifier: ct.table,
-				Namespace: []byte(namespace),
+				Namespace: namespace,
 				Qualifier: table,
 			},
 			Attributes:     pbAttributes,
