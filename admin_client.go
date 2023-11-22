@@ -42,6 +42,7 @@ type AdminClient interface {
 	MoveRegion(mr *hrpc.MoveRegion) error
 	CreateNamespace(t *hrpc.CreateNamespace) error
 	ListNamespaces(t *hrpc.ListNamespaces) ([]*pb.NamespaceDescriptor, error)
+	DeleteNamespace(t *hrpc.DeleteNamespace) error
 }
 
 // NewAdminClient creates an admin HBase client.
@@ -111,6 +112,20 @@ func (c *client) CreateNamespace(t *hrpc.CreateNamespace) error {
 	_, ok := pbmsg.(*pb.CreateNamespaceResponse)
 	if !ok {
 		return fmt.Errorf("sendRPC returned not a CreateTableResponse")
+	}
+
+	return nil
+}
+
+func (c *client) DeleteNamespace(t *hrpc.DeleteNamespace) error {
+	pbmsg, err := c.SendRPC(t)
+	if err != nil {
+		return err
+	}
+
+	_, ok := pbmsg.(*pb.DeleteNamespaceResponse)
+	if !ok {
+		return fmt.Errorf("sendRPC returned not a DeleteNamespaceResponse")
 	}
 
 	return nil
